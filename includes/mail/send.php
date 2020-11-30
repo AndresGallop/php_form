@@ -22,6 +22,13 @@ $visitor_topic = '';
 //1. Check the submission out - Validate the data
 // $_POST['firstname']
 
+$secretKey = "6LdV5fIZAAAAAMoo0WMMG1l2-bv1SRH6ULZ3_IjL";
+        $ip = $_SERVER['REMOTE_ADDR'];
+        // post request to server
+        $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) .  '&response=' . urlencode($captcha);
+        $response = file_get_contents($url);
+        $responseKeys = json_decode($response, true);
+
 if (isset($_POST{'firstname'})) {
     $visitor_name = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
 }
@@ -42,13 +49,26 @@ if (isset($_POST{'Topics'})) {
     $visitor_topic = $_POST['Topics'];
 }
 
+// if (empty($_POST['email'])) {
+//     $results['message'] = sprintf('This field is required');
+
+//     die('There are empty fields');
+// }
 
 
-/////
+
+// ///
 // if ($visitor_name == "" || $visitor_email == "") {
 //     $results['message'] = sprintf('We are sorry but the email did not go through.');
 // }
-/////
+// ///
+
+if (empty($_POST['g-recaptcha-response'])) {
+    $results['message'] = 'It looks like you are a Robot';
+    echo json_encode($results);
+    die();
+}
+
 
 $results['name'] = $visitor_name;
 $results['message'] = $visitor_message;
@@ -65,6 +85,8 @@ if ($visitor_topic == 'Freelance') {
 } else {
     $email_recipient = 'CompanyContracts@gmail.com';
 }
+
+
 //$email_recipient = 'andresgallod.i@gmail.com'; //Your email, or AKA, "To" email
 $email_message = sprintf('Name: %s, Email: %s, Topic: %s, Message: %s', $visitor_name, $visitor_email, $visitor_topic, $visitor_message);
 
@@ -79,20 +101,21 @@ $email_headers = array(
     'From'=>$visitor_email
 );
 
+
 //3. Send out the email
 $email_result = mail($email_recipient, $email_subject, $email_message, $email_headers);
 
 if ($email_result) {
     $results['message'] = sprintf('Thank you for contacting us, %s. You will get a reply within 24 hours.', $visitor_name);
-}
-
-if (empty($_POST['name'] || $_POST['email'])) {
-    $results['message'] = sprintf('There are empty fields that are required');
-
-    die('There are empty fields');
 } else {
-    $results['message'] = sprintf('We are sorry %s, but the email did not send, please try again.', $visitor_name);
+    $results['message'] = sprintf('We are sorry, but the email did not send, please try again.');
 }
+
+
+
+        
+
+        
 
 // if (empty($_POST['email'])) {
 //     $results['message'] = sprintf('This field is required');

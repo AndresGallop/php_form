@@ -1,0 +1,19 @@
+#Referneces for making the php Form functional:
+
+##reCaptcha:
+
+https://codeforgeek.com/google-recaptcha-tutorial/
+https://developers.google.com/recaptcha/docs/v3
+
+##This one was for the drop down field.
+
+https://www.youtube.com/watch?v=L1UFTbfKeF4&t=8s
+https://www.youtube.com/watch?v=umb3XZpVMiU
+
+##Empty functions = empty();
+
+https://www.php.net/manual/es/function.empty.php
+
+##Die functions = die();
+
+https://www.w3schools.com/php/func_misc_die.asp
